@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexGrowth — AI Growth Platform for Small Businesses</title>
+  <meta name="description" content="NexGrowth builds AI-powered lead capture, follow-up, and revenue systems for USA dental, legal, and real estate businesses. Deployed in 5 days. No calls required." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #0A0A0A;
+      --white: #FAFAF8;
+      --cream: #F2EFE8;
+      --ink: #1A1A1A;
+      --muted: #6B6B6B;
+      --border: #E2DDD6;
+      --accent: #1B4FFF;
+      --accent-light: #EEF2FF;
+      --green: #0D9F6E;
+      --green-light: #ECFDF5;
+      --red: #EF4444;
+      --red-light: #FEF2F2;
+      --yellow: #F59E0B;
+      --yellow-light: #FFFBEB;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--white); color: var(--ink); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(250,250,248,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-weight: 600; font-size: 1.1rem; letter-spacing: -0.02em; color: var(--ink); text-decoration: none; }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-cta { background: var(--ink); color: var(--white) !important; padding: 0.5rem 1.25rem; border-radius: 6px; font-weight: 500 !important; }
+    .nav-cta:hover { background: #333 !important; }
+
+    /* HERO */
+    .hero {
+      padding: 140px 5% 100px;
+      max-width: 1100px; margin: 0 auto;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--accent); background: var(--accent-light);
+      padding: 0.35rem 0.85rem; border-radius: 100px; margin-bottom: 2rem;
+    }
+    .hero-badge::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.8rem, 5.5vw, 5rem);
+      line-height: 1.06; letter-spacing: -0.025em;
+      color: var(--ink); margin-bottom: 1.5rem;
+    }
+    .hero h1 em { font-style: italic; color: var(--accent); }
+    .hero-sub {
+      font-size: 1.15rem; color: var(--muted); max-width: 540px;
+      margin: 0 auto 3rem; line-height: 1.7; font-weight: 300;
+    }
+
+    /* HERO METRICS */
+    .hero-metrics {
+      display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap;
+      padding-top: 3.5rem; margin-top: 3.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .metric-item { text-align: center; }
+    .metric-num { font-family: var(--serif); font-size: 2.4rem; line-height: 1; color: var(--ink); }
+    .metric-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* SCANNING OVERLAY */
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* RESULTS PAGE */
+
+    .results-header {
+      background: var(--ink); padding: 4rem 5% 3rem;
+    }
+    .results-header-inner { max-width: 1100px; margin: 0 auto; }
+    .results-domain {
+      font-size: 0.8rem; color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      padding: 0.3rem 0.85rem; border-radius: 100px;
+      display: inline-block; margin-bottom: 1.5rem;
+    }
+    .results-title {
+      font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 3rem);
+      color: var(--white); margin-bottom: 0.75rem; letter-spacing: -0.02em;
+    }
+    .results-sub { font-size: 0.95rem; color: rgba(255,255,255,0.5); font-weight: 300; }
+
+    /* SCORE CARDS ROW */
+    .scores-row {
+      max-width: 1100px; margin: -2rem auto 0; padding: 0 5% 3rem;
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem;
+    }
+    .score-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem 1.25rem;
+      text-align: center; box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    }
+    .score-card.main-score { grid-column: span 2; background: var(--ink); border-color: transparent; }
+    .score-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
+    .main-score .score-label { color: rgba(255,255,255,0.4); }
+    .score-ring {
+      width: 80px; height: 80px; margin: 0 auto 0.75rem;
+      position: relative; display: flex; align-items: center; justify-content: center;
+    }
+    .score-ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+    .score-ring-num { font-family: var(--serif); font-size: 1.4rem; line-height: 1; position: relative; z-index: 1; }
+    .main-score .score-ring-num { color: var(--white); font-size: 2.2rem; }
+    .score-ring-label { font-size: 0.75rem; color: var(--muted); }
+    .main-score .score-ring-label { color: rgba(255,255,255,0.45); }
+    .score-status { display: inline-block; font-size: 0.68rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 100px; margin-top: 0.4rem; }
+    .status-critical { background: var(--red-light); color: var(--red); }
+    .status-warn { background: var(--yellow-light); color: var(--yellow); }
+    .status-good { background: var(--green-light); color: var(--green); }
+
+    /* RESULTS BODY */
+    .results-body { max-width: 1100px; margin: 0 auto; padding: 0 5% 5rem; }
+    .results-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+
+    /* SECTION CARD */
+    .r-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px; padding: 2rem; margin-bottom: 1.5rem;
+    }
+    .r-card-title {
+      font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    /* PRIORITY ISSUES */
+    .issue-item {
+      display: flex; gap: 1rem; padding: 1.1rem 0;
+      border-bottom: 1px solid var(--cream); align-items: flex-start;
+    }
+    .issue-item:last-child { border-bottom: none; }
+    .issue-priority {
+      font-size: 0.65rem; font-weight: 700; padding: 0.25rem 0.6rem;
+      border-radius: 100px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+    }
+    .p-high { background: var(--red-light); color: var(--red); }
+    .p-med { background: var(--yellow-light); color: var(--yellow); }
+    .p-low { background: var(--green-light); color: var(--green); }
+    .issue-content h4 { font-size: 0.9rem; font-weight: 600; color: var(--ink); margin-bottom: 0.3rem; }
+    .issue-content p { font-size: 0.82rem; color: var(--muted); line-height: 1.55; margin-bottom: 0.4rem; }
+    .issue-impact { font-size: 0.75rem; font-weight: 500; color: var(--accent); }
+
+    /* AUTOMATION LIST */
+    .auto-item {
+      display: flex; align-items: flex-start; gap: 0.85rem;
+      padding: 1rem 0; border-bottom: 1px solid var(--cream);
+    }
+    .auto-item:last-child { border-bottom: none; }
+    .auto-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+    .auto-item h4 { font-size: 0.88rem; font-weight: 600; color: var(--ink); margin-bottom: 0.25rem; }
+    .auto-item p { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+    .auto-badge { font-size: 0.68rem; font-weight: 600; color: var(--green); background: var(--green-light); padding: 0.15rem 0.5rem; border-radius: 100px; display: inline-block; margin-top: 0.3rem; }
+
+    /* SEO SNAPSHOT */
+    .seo-row { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem 0; border-bottom: 1px solid var(--cream); font-size: 0.85rem; }
+    .seo-row:last-child { border-bottom: none; }
+    .seo-key { color: var(--muted); }
+    .seo-val { font-weight: 500; color: var(--ink); }
+    .seo-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 0.4rem; }
+    .dot-red { background: var(--red); }
+    .dot-yellow { background: var(--yellow); }
+    .dot-green { background: var(--green); }
+
+    /* IMPACT ESTIMATE */
+    .impact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+    .impact-item { background: var(--cream); border-radius: 10px; padding: 1.25rem; }
+    .impact-num { font-family: var(--serif); font-size: 1.8rem; color: var(--ink); line-height: 1; margin-bottom: 0.3rem; }
+    .impact-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+
+    /* LEAD GATE */
+    #leadGate {
+      background: var(--ink); border-radius: 16px;
+      padding: 3rem; margin: 2rem 0; text-align: center;
+    }
+    .gate-badge {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--accent); background: rgba(27,79,255,0.15);
+      padding: 0.3rem 0.85rem; border-radius: 100px;
+      display: inline-block; margin-bottom: 1.5rem;
+    }
+    #leadGate h2 { font-family: var(--serif); font-size: 2rem; color: var(--white); margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+    #leadGate p { font-size: 0.9rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; max-width: 440px; margin-left: auto; margin-right: auto; line-height: 1.65; }
+    .gate-form { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; max-width: 500px; margin: 0 auto 1rem; }
+    .gate-form input {
+      padding: 0.8rem 1rem; border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 8px; background: rgba(255,255,255,0.06);
+      font-family: var(--sans); font-size: 0.875rem; color: var(--white); outline: none;
+      transition: border-color 0.2s;
+    }
+    .gate-form input::placeholder { color: rgba(255,255,255,0.25); }
+    .gate-form input:focus { border-color: var(--accent); }
+    .gate-form input.full { grid-column: span 2; }
+    .btn-gate {
+      grid-column: span 2; background: var(--white); color: var(--ink);
+      padding: 0.9rem; border: none; border-radius: 8px;
+      font-family: var(--sans); font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-gate:hover { opacity: 0.92; transform: translateY(-1px); }
+    .gate-note { font-size: 0.75rem; color: rgba(255,255,255,0.25); }
+
+    /* BLUR OVERLAY on locked sections */
+    .locked { position: relative; }
+    .locked::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 20%, var(--white) 80%);
+      border-radius: 14px; pointer-events: none;
+    }
+    .lock-msg {
+      position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+      z-index: 2; font-size: 0.8rem; color: var(--muted); white-space: nowrap;
+      background: var(--white); padding: 0.4rem 1rem; border-radius: 100px;
+      border: 1px solid var(--border);
+    }
+
+    /* MAIN HOMEPAGE */
+    #homePage { display: block; }
+
+    /* PROBLEM SECTION */
+    .problem { background: var(--ink); padding: 100px 5%; }
+    .problem .container { max-width: 1100px; margin: 0 auto; }
+    .section-eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+    .problem .section-eyebrow { color: rgba(255,255,255,0.35); }
+    .section-title { font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 3rem); line-height: 1.15; letter-spacing: -0.02em; color: var(--ink); max-width: 680px; margin-bottom: 1.25rem; }
+    .problem .section-title { color: var(--white); max-width: 780px; }
+    .problem .section-title em { font-style: italic; color: rgba(255,255,255,0.35); }
+    .section-sub { font-size: 1.05rem; color: var(--muted); max-width: 560px; line-height: 1.7; font-weight: 300; }
+    .problem-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5px; margin-top: 4rem; background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.07); border-radius: 12px; overflow: hidden; }
+    .problem-card { background: var(--ink); padding: 2.5rem; }
+    .problem-card-icon { font-size: 1.5rem; margin-bottom: 1.25rem; }
+    .problem-card h3 { font-size: 1rem; font-weight: 600; color: var(--white); margin-bottom: 0.6rem; }
+    .problem-card p { font-size: 0.875rem; color: rgba(255,255,255,0.45); line-height: 1.65; font-weight: 300; }
+
+    /* GROWTH SYSTEMS */
+    .systems { padding: 100px 5%; }
+    .systems .container { max-width: 1100px; margin: 0 auto; }
+    .systems-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3.5rem; }
+    .system-card { border: 1px solid var(--border); border-radius: 14px; padding: 2.25rem; transition: box-shadow 0.25s, transform 0.2s; }
+    .system-card:hover { box-shadow: 0 8px 40px rgba(0,0,0,0.07); transform: translateY(-2px); }
+    .system-num { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 1.5rem; }
+    .system-flow { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1.25rem; }
+    .flow-step { font-size: 0.82rem; color: var(--muted); display: flex; align-items: center; gap: 0.5rem; }
+    .flow-step.problem-step { color: var(--red); font-weight: 500; }
+    .flow-step.solution-step { color: var(--accent); font-weight: 500; }
+    .flow-step.result-step { color: var(--green); font-weight: 600; }
+    .flow-arrow { font-size: 0.7rem; color: var(--border); margin-left: 0.25rem; }
+    .system-card h3 { font-family: var(--serif); font-size: 1.35rem; color: var(--ink); margin-bottom: 0.6rem; line-height: 1.2; }
+    .system-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+    .tag { font-size: 0.7rem; font-weight: 500; color: var(--muted); background: var(--cream); padding: 0.2rem 0.6rem; border-radius: 100px; border: 1px solid var(--border); }
+
+    /* WHO WE SERVE */
+    .niches { background: var(--cream); padding: 100px 5%; }
+    .niches .container { max-width: 1100px; margin: 0 auto; }
+    .niche-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 3.5rem; }
+    .niche-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; transition: box-shadow 0.25s; }
+    .niche-card:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.07); }
+    .niche-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .niche-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--ink); }
+    .niche-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.65; }
+    .niche-tag { display: inline-block; font-size: 0.7rem; font-weight: 500; color: var(--accent); background: var(--accent-light); padding: 0.2rem 0.6rem; border-radius: 100px; margin-top: 0.85rem; }
+
+    /* CASE STUDY */
+    .case-study { padding: 100px 5%; }
+    .case-study .container { max-width: 1100px; margin: 0 auto; }
+    .case-study-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 3rem; margin-top: 3.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .case-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); background: var(--green-light); padding: 0.3rem 0.75rem; border-radius: 100px; display: inline-block; margin-bottom: 1.25rem; }
+    .case-study-card h3 { font-family: var(--serif); font-size: 1.75rem; line-height: 1.2; color: var(--ink); margin-bottom: 1rem; }
+    .case-study-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.7; margin-bottom: 1rem; }
+    .case-results { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .result-item { padding: 1.25rem; background: var(--cream); border-radius: 10px; }
+    .result-number { font-family: var(--serif); font-size: 1.8rem; color: var(--ink); line-height: 1; margin-bottom: 0.3rem; }
+    .result-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+
+    /* ROI CALCULATOR */
+    .roi-section { background: var(--cream); padding: 100px 5%; }
+    .roi-section .container { max-width: 1100px; margin: 0 auto; }
+    .roi-calculator { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-top: 3.5rem; background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; overflow: hidden; }
+    .roi-inputs { padding: 2.5rem; border-right: 1px solid var(--border); }
+    .roi-eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 2rem; }
+    .roi-field { margin-bottom: 1.5rem; }
+    .roi-field label { display: block; font-size: 0.82rem; font-weight: 500; color: var(--ink); margin-bottom: 0.5rem; }
+    .roi-input-wrap { display: flex; align-items: center; border: 1.5px solid var(--border); border-radius: 8px; overflow: hidden; transition: border-color 0.2s; }
+    .roi-input-wrap:focus-within { border-color: var(--accent); }
+    .roi-prefix, .roi-unit { padding: 0.75rem 0.85rem; background: var(--cream); font-size: 0.875rem; font-weight: 500; color: var(--muted); }
+    .roi-input-wrap input { flex: 1; padding: 0.75rem 1rem; border: none; font-family: var(--sans); font-size: 0.95rem; font-weight: 500; color: var(--ink); outline: none; }
+    .roi-field select { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--border); border-radius: 8px; font-family: var(--sans); font-size: 0.9rem; color: var(--ink); background: var(--white); outline: none; }
+    .roi-slider-wrap { margin-top: 1.5rem; }
+    .roi-slider-wrap label { display: block; font-size: 0.82rem; font-weight: 500; color: var(--ink); margin-bottom: 0.75rem; }
+    .roi-slider-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--muted); margin-bottom: 0.4rem; }
+    .roi-slider { width: 100%; accent-color: var(--accent); cursor: pointer; }
+    .roi-results { padding: 2.5rem; background: var(--ink); display: flex; flex-direction: column; gap: 1.5rem; }
+    .roi-result-eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+    .roi-lost { padding: 1.75rem; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); }
+    .roi-lost-label { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-bottom: 0.5rem; }
+    .roi-lost-number { font-family: var(--serif); font-size: 3rem; color: #FF6B6B; line-height: 1; margin-bottom: 0.4rem; transition: all 0.3s; }
+    .roi-lost-sub { font-size: 0.78rem; color: rgba(255,255,255,0.35); }
+    .roi-breakdown { display: flex; flex-direction: column; gap: 0; }
+    .roi-breakdown-item { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.83rem; }
+    .roi-b-label { color: rgba(255,255,255,0.45); }
+    .roi-b-value { font-weight: 600; color: var(--white); }
+    .roi-b-green { color: #4ADE80; }
+    .roi-verdict { font-size: 0.85rem; color: rgba(255,255,255,0.55); line-height: 1.65; padding: 1rem 1.25rem; background: rgba(255,255,255,0.04); border-radius: 8px; border-left: 3px solid var(--accent); }
+    .roi-cta { display: block; text-align: center; background: var(--white); color: var(--ink); padding: 0.9rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: opacity 0.2s; }
+    .roi-cta:hover { opacity: 0.9; }
+    .roi-note { font-size: 0.72rem; color: rgba(255,255,255,0.25); text-align: center; }
+    .how-price { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; margin-top: 5rem; padding-top: 4rem; border-top: 1px solid var(--border); align-items: start; }
+    .price-principle { display: flex; gap: 1rem; margin-bottom: 1.75rem; align-items: flex-start; }
+    .price-principle-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .price-principle strong { display: block; font-size: 0.95rem; font-weight: 600; color: var(--ink); margin-bottom: 0.3rem; }
+    .price-principle p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; margin: 0; }
+
+    /* PROCESS */
+    .process { padding: 100px 5%; }
+    .process .container { max-width: 1100px; margin: 0 auto; }
+    .process-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 4rem; }
+    .process-step { padding: 2rem 2rem 2rem 0; position: relative; }
+    .process-step:not(:last-child)::after { content: '→'; position: absolute; right: -0.5rem; top: 2.2rem; color: var(--border); font-size: 1.2rem; }
+    .step-num { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 1rem; }
+    .process-step h3 { font-size: 1rem; font-weight: 600; color: var(--ink); margin-bottom: 0.6rem; }
+    .process-step p { font-size: 0.83rem; color: var(--muted); line-height: 1.65; }
+
+    /* FINAL CTA */
+    .final-cta { background: var(--ink); padding: 120px 5%; text-align: center; }
+    .final-cta .section-eyebrow { color: rgba(255,255,255,0.35); margin-bottom: 1.5rem; }
+    .final-cta h2 { font-family: var(--serif); font-size: clamp(2.2rem, 4vw, 3.5rem); line-height: 1.1; color: var(--white); max-width: 680px; margin: 0 auto 1.5rem; letter-spacing: -0.02em; }
+    .final-cta h2 em { font-style: italic; color: rgba(255,255,255,0.35); }
+    .final-cta p { font-size: 1rem; color: rgba(255,255,255,0.45); max-width: 460px; margin: 0 auto 3rem; font-weight: 300; line-height: 1.7; }
+
+    /* GUARANTEE STRIP */
+    .guarantee-strip { background: var(--green-light); border-top: 1px solid #D1FAE5; border-bottom: 1px solid #D1FAE5; padding: 1rem 5%; display: flex; align-items: center; justify-content: center; gap: 3rem; flex-wrap: wrap; }
+    .guarantee-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem; font-weight: 500; color: var(--green); }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 2.5rem 5%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { font-weight: 600; font-size: 0.95rem; color: var(--ink); text-decoration: none; }
+    .footer-logo span { color: var(--accent); }
+    .footer-links { display: flex; gap: 2rem; list-style: none; }
+    .footer-links a { font-size: 0.8rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--ink); }
+    .footer-copy { font-size: 0.78rem; color: var(--muted); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 0 4%; }
+      .nav-links { display: none; }
+      .hero { padding: 110px 4% 80px; }
+      .scores-row { grid-template-columns: 1fr 1fr; }
+      .score-card.main-score { grid-column: span 2; }
+      .results-grid { grid-template-columns: 1fr; }
+      .roi-calculator { grid-template-columns: 1fr; }
+      .how-price { grid-template-columns: 1fr; gap: 2.5rem; }
+      .process-steps { grid-template-columns: 1fr 1fr; }
+      .process-step:not(:last-child)::after { display: none; }
+      .case-study-card { grid-template-columns: 1fr; gap: 2.5rem; }
+      footer { flex-direction: column; text-align: center; }
+      .footer-links { justify-content: center; }
+      .guarantee-strip { gap: 1.5rem; }
+      .gate-form { grid-template-columns: 1fr; }
+      .gate-form input.full { grid-column: span 1; }
+      .btn-gate { grid-column: span 1; }
+      .hero-metrics { gap: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#" onclick="showHome()">Nex<span>Growth</span></a>
+  <ul class="nav-links">
+    <li><a href="#systems">Growth Systems</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#roi">Revenue Calculator</a></li>
+    <li><a href="#contact" class="nav-cta">Get Free Growth Mapping →</a></li>
+  </ul>
+</nav>
+
+
+
+<!-- HOME PAGE -->
+<div id="homePage">
+
+  <!-- HERO -->
+  <section style="padding-top:140px; padding-bottom:80px;">
+    <div class="hero">
+      <div class="hero-badge">AI Growth Systems for USA Small Businesses</div>
+      <h1>The AI growth system for <em>dental, legal, and real estate</em> businesses.</h1>
+      <p class="hero-sub">We build automated lead capture, follow-up, and revenue systems for USA service businesses. Deployed in 5 days. No calls required.</p>
+
+      <div class="hero-actions" style="justify-content:center;">
+        <a href="#contact" class="btn-primary">Get a Free Growth Mapping →</a>
+        <a href="#results" class="btn-secondary">See Real Results</a>
+      </div>
+
+      <div class="hero-metrics">
+        <div class="metric-item">
+          <div class="metric-num">40%</div>
+          <div class="metric-label">Avg. leads lost without<br>automated follow-up</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-num">&lt;5 min</div>
+          <div class="metric-label">Window to respond<br>before leads go cold</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-num">4+</div>
+          <div class="metric-label">Industries where we've<br>deployed live systems</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-num">5 days</div>
+          <div class="metric-label">Average time from<br>brief to live system</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GUARANTEE STRIP -->
+  <div class="guarantee-strip">
+    <div class="guarantee-item">✓ No calls required — 100% async</div>
+    <div class="guarantee-item">✓ 50% upfront · 50% on delivery</div>
+    <div class="guarantee-item">✓ Free revisions until system works</div>
+    <div class="guarantee-item">✓ Loom walkthrough on every build</div>
+  </div>
+
+  <!-- INDUSTRIES SERVED STRIP -->
+  <div style="border-bottom:1px solid var(--border); padding:1.5rem 5%; text-align:center;">
+    <p style="font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1.25rem;">Industries we've deployed live systems for</p>
+    <div style="display:flex;justify-content:center;align-items:center;gap:3rem;flex-wrap:wrap;">
+      <span style="font-size:0.875rem;font-weight:500;color:var(--muted);">🦷 Dental Practices</span>
+      <span style="font-size:0.875rem;font-weight:500;color:var(--muted);">⚖️ Law Firms</span>
+      <span style="font-size:0.875rem;font-weight:500;color:var(--muted);">🏡 Real Estate</span>
+      <span style="font-size:0.875rem;font-weight:500;color:var(--muted);">✂️ Salons & Med Spas</span>
+      <span style="font-size:0.875rem;font-weight:500;color:var(--muted);">🏗️ Home Services</span>
+    </div>
+  </div>
+
+  <!-- PROBLEM -->
+  <section class="problem">
+    <div class="container">
+      <div class="section-eyebrow">Why Most Small Businesses Plateau</div>
+      <h2 class="section-title">You're generating interest. <em>You're just not capturing it.</em></h2>
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="problem-card-icon">⏱</div>
+          <h3>Leads go cold in under 5 minutes</h3>
+          <p>A prospect who fills your form and doesn't hear back within 5 minutes is 80% less likely to convert. Manual responses can't compete.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-icon">📋</div>
+          <h3>Your team is doing $10/hr work</h3>
+          <p>Copying lead data, sending follow-up emails, updating spreadsheets — your team spends hours on tasks automation handles for fractions of a cent.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-icon">🔇</div>
+          <h3>Leads arriving after hours disappear</h3>
+          <p>When a lead comes in at 9pm or on a weekend, nothing happens. Businesses with automated systems are booking those clients while you sleep.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-icon">📉</div>
+          <h3>You can't scale what isn't systemized</h3>
+          <p>Growing a business built on manual processes means hiring more people for more manual work. Automation removes this ceiling permanently.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GROWTH SYSTEMS -->
+  <section class="systems" id="systems">
+    <div class="container">
+      <div class="section-eyebrow">Growth Systems</div>
+      <h2 class="section-title">We don't sell services. We build revenue systems.</h2>
+      <p class="section-sub">Every system is scoped to your specific bottleneck — not a generic package.</p>
+      <div class="systems-grid">
+        <div class="system-card">
+          <div class="system-num">SYSTEM 01</div>
+          <h3>Lead Capture & Auto Follow-Up</h3>
+          <div class="system-flow">
+            <div class="flow-step problem-step">↳ Problem: Leads inquire, nobody responds fast enough</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step solution-step">↳ System: AI responds within 2 min, qualifies, routes hot leads</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step result-step">↳ Result: 60%+ more leads converted before competitors respond</div>
+          </div>
+          <div class="system-tags">
+            <span class="tag">n8n Automation</span><span class="tag">AI Qualification</span><span class="tag">CRM Logging</span>
+          </div>
+        </div>
+        <div class="system-card">
+          <div class="system-num">SYSTEM 02</div>
+          <h3>Website Conversion System</h3>
+          <div class="system-flow">
+            <div class="flow-step problem-step">↳ Problem: Traffic arrives but visitors don't take action</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step solution-step">↳ System: Conversion-optimized site with integrated lead capture</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step result-step">↳ Result: More visitors become booked appointments</div>
+          </div>
+          <div class="system-tags">
+            <span class="tag">WordPress</span><span class="tag">Local SEO</span><span class="tag">Speed Optimized</span>
+          </div>
+        </div>
+        <div class="system-card">
+          <div class="system-num">SYSTEM 03</div>
+          <h3>Reputation & Review Automation</h3>
+          <div class="system-flow">
+            <div class="flow-step problem-step">↳ Problem: Happy clients don't leave reviews — unhappy ones do</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step solution-step">↳ System: Auto-request after every visit, AI-drafted replies</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step result-step">↳ Result: Higher Google ranking, more trust, more inbound leads</div>
+          </div>
+          <div class="system-tags">
+            <span class="tag">Google Reviews</span><span class="tag">Auto-Request</span><span class="tag">AI Responses</span>
+          </div>
+        </div>
+        <div class="system-card">
+          <div class="system-num">SYSTEM 04</div>
+          <h3>Content & Local SEO System</h3>
+          <div class="system-flow">
+            <div class="flow-step problem-step">↳ Problem: Competitors rank above you on Google locally</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step solution-step">↳ System: Monthly SEO content, GBP management, citations</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step result-step">↳ Result: Rank higher, get found first, reduce paid ad spend</div>
+          </div>
+          <div class="system-tags">
+            <span class="tag">SEO Content</span><span class="tag">GBP Management</span><span class="tag">Monthly</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO WE SERVE -->
+  <section class="niches">
+    <div class="container">
+      <div class="section-eyebrow">Industries We Serve</div>
+      <h2 class="section-title">Built for USA service businesses where every lead has real dollar value.</h2>
+      <div class="niche-grid">
+        <div class="niche-card">
+          <div class="niche-icon">🦷</div>
+          <h3>Dental Practices</h3>
+          <p>New patient follow-up automated. Appointment reminders sent. Review requests triggered after every visit — zero manual work.</p>
+          <span class="niche-tag">$300–$800 avg. patient value</span>
+        </div>
+        <div class="niche-card">
+          <div class="niche-icon">⚖️</div>
+          <h3>Law Firms</h3>
+          <p>Intake forms processed automatically. Hot leads escalated instantly. Consultation slots filled without receptionist involvement.</p>
+          <span class="niche-tag">$1,500–$10,000 avg. case value</span>
+        </div>
+        <div class="niche-card">
+          <div class="niche-icon">🏡</div>
+          <h3>Real Estate Agents</h3>
+          <p>Listing inquiries handled 24/7. Leads scored and routed. Follow-up sequences running for 90 days without manual effort.</p>
+          <span class="niche-tag">$5,000–$15,000 avg. commission</span>
+        </div>
+        <div class="niche-card">
+          <div class="niche-icon">✂️</div>
+          <h3>Salons & Med Spas</h3>
+          <p>Missed call callbacks automated. No-shows reduced with smart reminders. Lapsed clients re-engaged on autopilot.</p>
+          <span class="niche-tag">$150–$500 avg. client value</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASE STUDY -->
+  <section class="case-study" id="results">
+    <div class="container">
+      <div class="section-eyebrow">Live Results</div>
+      <h2 class="section-title">From zero digital presence to a fully automated growth system.</h2>
+      <div class="case-study-card">
+        <div>
+          <span class="case-label">✓ Verified Case Study</span>
+          <h3>Hair Makeover Junction — Delhi Salon</h3>
+          <p>A busy salon with zero digital presence — no website, no Google listing, no online booking. Walk-ins only, relying entirely on word of mouth.</p>
+          <p>We deployed a complete digital growth stack: professional website, optimized Google Business Profile, automated review requests, and an online booking flow — all running without staff involvement.</p>
+          <a href="mailto:nexgrowth@nexgrowthco.com?subject=Case Study Request" style="display:inline-flex;align-items:center;gap:0.5rem;font-size:0.875rem;font-weight:500;color:var(--accent);text-decoration:none;margin-top:0.5rem;">Request Full Case Study →</a>
+        </div>
+        <div class="case-results">
+          <div class="result-item">
+            <div class="result-number">5 days</div>
+            <div class="result-label">Website live from first brief</div>
+          </div>
+          <div class="result-item">
+            <div class="result-number">GBP ✓</div>
+            <div class="result-label">Google presence fully optimized</div>
+          </div>
+          <div class="result-item">
+            <div class="result-number">Auto</div>
+            <div class="result-label">Reviews requested after every visit</div>
+          </div>
+          <div class="result-item">
+            <div class="result-number">24/7</div>
+            <div class="result-label">Bookings without staff involvement</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROI CALCULATOR -->
+  <section class="roi-section" id="roi">
+    <div class="container">
+      <div class="section-eyebrow">Revenue Calculator</div>
+      <h2 class="section-title">See how much revenue is leaking from your business right now.</h2>
+      <p class="section-sub">Enter your numbers. The calculator shows exactly what slow follow-up is costing you every month.</p>
+      <div class="roi-calculator">
+        <div class="roi-inputs">
+          <div class="roi-eyebrow">📊 Your Current Numbers</div>
+          <div class="roi-field">
+            <label>Monthly leads / inquiries</label>
+            <div class="roi-input-wrap">
+              <input type="number" id="leads" value="80" min="1" max="10000" oninput="calcROI()" />
+              <span class="roi-unit">leads</span>
+            </div>
+          </div>
+          <div class="roi-field">
+            <label>Average job / patient value</label>
+            <div class="roi-input-wrap">
+              <span class="roi-prefix">$</span>
+              <input type="number" id="dealValue" value="500" min="1" oninput="calcROI()" />
+            </div>
+          </div>
+          <div class="roi-field">
+            <label>Current conversion rate</label>
+            <div class="roi-input-wrap">
+              <input type="number" id="convRate" value="20" min="1" max="100" oninput="calcROI()" />
+              <span class="roi-unit">%</span>
+            </div>
+          </div>
+          <div class="roi-field">
+            <label>Industry</label>
+            <select id="industry" onchange="calcROI()">
+              <option value="dental">Dental Practice</option>
+              <option value="law">Law Firm</option>
+              <option value="realestate">Real Estate</option>
+              <option value="salon">Salon / Med Spa</option>
+              <option value="other">Other Service Business</option>
+            </select>
+          </div>
+          <div class="roi-slider-wrap">
+            <label>How fast do you respond to new leads?</label>
+            <div class="roi-slider-labels"><span>Instant</span><span>1 hr</span><span>Same day</span><span>Next day+</span></div>
+            <input type="range" id="responseTime" min="0" max="3" value="2" step="1" oninput="calcROI()" class="roi-slider" />
+          </div>
+        </div>
+        <div class="roi-results">
+          <div class="roi-result-eyebrow">💸 Revenue Leak Estimate</div>
+          <div class="roi-lost">
+            <div class="roi-lost-label">Monthly revenue being lost</div>
+            <div class="roi-lost-number" id="lostRevenue">$0</div>
+            <div class="roi-lost-sub" id="lostLeads">— leads slipping away every month</div>
+          </div>
+          <div class="roi-breakdown">
+            <div class="roi-breakdown-item"><span class="roi-b-label">Recoverable leads/month</span><span class="roi-b-value" id="recoveredLeads">—</span></div>
+            <div class="roi-breakdown-item"><span class="roi-b-label">Additional clients/month</span><span class="roi-b-value" id="additionalClients">—</span></div>
+            <div class="roi-breakdown-item"><span class="roi-b-label">Annual revenue upside</span><span class="roi-b-value" id="annualUpside">—</span></div>
+            <div class="roi-breakdown-item"><span class="roi-b-label">Estimated system ROI</span><span class="roi-b-value roi-b-green" id="systemROI">—</span></div>
+          </div>
+          <div class="roi-verdict" id="roiVerdict">Enter your numbers to see your revenue leak.</div>
+          <a href="#contact" class="roi-cta" id="roiCTA">Get My Free Growth Mapping →</a>
+          <p class="roi-note">We price based on your ROI. Most clients recover their investment within 30 days.</p>
+        </div>
+      </div>
+      <div class="how-price">
+        <div>
+          <div class="section-eyebrow" style="margin-bottom:1rem;">How We Price</div>
+          <h3 style="font-family:var(--serif);font-size:1.75rem;line-height:1.2;margin-bottom:1rem;letter-spacing:-0.02em;">We charge based on the revenue opportunity — not hours.</h3>
+          <p style="font-size:0.9rem;color:var(--muted);line-height:1.75;">After your free growth mapping, we send a scoped proposal with a flat fee tied to your specific revenue opportunity. You know exactly what you're getting before committing.</p>
+        </div>
+        <div>
+          <div class="price-principle"><div class="price-principle-icon">🎯</div><div><strong>Scoped to your bottleneck</strong><p>We fix the one system costing you the most — not everything at once.</p></div></div>
+          <div class="price-principle"><div class="price-principle-icon">💰</div><div><strong>50% upfront · 50% on delivery</strong><p>Second half only after the system is live and working as scoped.</p></div></div>
+          <div class="price-principle"><div class="price-principle-icon">🔁</div><div><strong>Free revisions until it works</strong><p>If it doesn't perform as scoped, we fix it. No back-and-forth.</p></div></div>
+          <div class="price-principle"><div class="price-principle-icon">📈</div><div><strong>30-day ROI target</strong><p>Most clients see positive ROI within the first month of deployment.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="process">
+    <div class="container">
+      <div class="section-eyebrow">How It Works</div>
+      <h2 class="section-title">From growth mapping to live system in 5 days.</h2>
+      <p class="section-sub">Everything happens over email and Loom. No calls. No meetings. No back-and-forth.</p>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-num">STEP 01</div>
+          <h3>Free Growth Mapping</h3>
+          <p>Send us your website and biggest challenge. We map your current lead flow, identify the highest-leverage fix, and send you a personalized growth plan — free.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">STEP 02</div>
+          <h3>Scoped Proposal</h3>
+          <p>You receive a specific scope, fixed price, and ROI estimate before paying anything. No surprises, no hourly billing.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">STEP 03</div>
+          <h3>We Build & Test</h3>
+          <p>System built and tested end-to-end. You see a live demo before it connects to your business. 50% payment only on delivery.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">STEP 04</div>
+          <h3>Loom Handoff</h3>
+          <p>Full walkthrough video so you understand exactly what was built and how to manage it. Free revisions until it works exactly as scoped.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta" id="contact">
+    <div class="section-eyebrow">Free Growth Mapping</div>
+    <h2>Ready to find out where your business is <em>losing revenue?</em></h2>
+    <p>Send us your website. We'll map your current lead flow, identify the highest-leverage fix, and send you a personalized growth plan — free, no obligation.</p>
+
+    <div style="max-width:540px; margin:0 auto;">
+      <div style="background:rgba(255,255,255,0.06); border:1.5px solid rgba(255,255,255,0.12); border-radius:14px; padding:2rem;">
+        <form action="mailto:nexgrowth@nexgrowthco.com" method="GET" enctype="text/plain">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.85rem; margin-bottom:0.85rem;">
+            <input type="text" name="name" placeholder="Your name" style="background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.12);border-radius:8px;padding:0.8rem 1rem;font-family:var(--sans);font-size:0.875rem;color:var(--white);outline:none;" />
+            <input type="text" name="business" placeholder="Business name" style="background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.12);border-radius:8px;padding:0.8rem 1rem;font-family:var(--sans);font-size:0.875rem;color:var(--white);outline:none;" />
+            <input type="email" name="email" placeholder="Business email" required style="background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.12);border-radius:8px;padding:0.8rem 1rem;font-family:var(--sans);font-size:0.875rem;color:var(--white);outline:none;grid-column:span 2;" />
+            <input type="url" name="website" placeholder="Your website URL" style="background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.12);border-radius:8px;padding:0.8rem 1rem;font-family:var(--sans);font-size:0.875rem;color:var(--white);outline:none;grid-column:span 2;" />
+            <select name="industry" style="background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.12);border-radius:8px;padding:0.8rem 1rem;font-family:var(--sans);font-size:0.875rem;color:rgba(255,255,255,0.6);outline:none;grid-column:span 2;">
+              <option value="">Select your industry...</option>
+              <option>Dental Practice</option>
+              <option>Law Firm</option>
+              <option>Real Estate</option>
+              <option>Salon / Med Spa</option>
+              <option>Other Service Business</option>
+            </select>
+            <textarea name="challenge" placeholder="Biggest challenge right now — e.g. leads come in but nobody follows up fast enough..." rows="3" style="background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.12);border-radius:8px;padding:0.8rem 1rem;font-family:var(--sans);font-size:0.875rem;color:var(--white);outline:none;grid-column:span 2;resize:vertical;"></textarea>
+          </div>
+          <button type="submit" style="width:100%;background:var(--white);color:var(--ink);padding:0.9rem;border:none;border-radius:8px;font-family:var(--sans);font-size:0.95rem;font-weight:600;cursor:pointer;">Send — Get My Free Growth Mapping →</button>
+        </form>
+        <p style="font-size:0.75rem;color:rgba(255,255,255,0.25);text-align:center;margin-top:0.85rem;">We reply within 12 hours. No calls. No spam.</p>
+      </div>
+
+      <div style="display:flex;justify-content:center;gap:2rem;margin-top:1.5rem;flex-wrap:wrap;">
+        <div style="font-size:0.8rem;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:0.4rem;"><span style="color:var(--green);">✓</span> 100% async — no calls</div>
+        <div style="font-size:0.8rem;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:0.4rem;"><span style="color:var(--green);">✓</span> Personalized to your business</div>
+        <div style="font-size:0.8rem;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:0.4rem;"><span style="color:var(--green);">✓</span> Reply within 12 hours</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <a class="footer-logo" href="#">Nex<span>Growth</span></a>
+    <ul class="footer-links">
+      <li><a href="#systems">Growth Systems</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#roi">Revenue Calculator</a></li>
+      <li><a href="#contact">Get Free Mapping</a></li>
+      <li><a href="https://www.linkedin.com/in/haider-ali-nexgrowth" target="_blank">LinkedIn</a></li>
+      <li><a href="mailto:nexgrowth@nexgrowthco.com">Email</a></li>
+    </ul>
+    <p class="footer-copy">© 2025 NexGrowth. AI Growth Systems for USA Small Businesses.</p>
+  </footer>
+
+</div><!-- end homePage -->
+
+
+<script>
+// ── ROI CALCULATOR ──
+function calcROI() {
+  const leads = parseFloat(document.getElementById('leads').value) || 0;
+  const dealValue = parseFloat(document.getElementById('dealValue').value) || 0;
+  const convRate = parseFloat(document.getElementById('convRate').value) / 100 || 0;
+  const responseTime = parseInt(document.getElementById('responseTime').value);
+  const industry = document.getElementById('industry').value;
+
+  const leakRates = [0.05, 0.20, 0.35, 0.45];
+  const leakRate = leakRates[responseTime];
+  const industryMultipliers = { dental: 1.0, law: 2.5, realestate: 4.0, salon: 0.6, other: 1.0 };
+  const adjustedDeal = dealValue * (industryMultipliers[industry] || 1.0);
+
+  const leakedLeads = Math.round(leads * leakRate);
+  const recoveredLeads = Math.round(leakedLeads * 0.60);
+  const additionalClients = Math.round(recoveredLeads * convRate);
+  const monthlyLost = Math.round(leakedLeads * convRate * adjustedDeal);
+  const annualUpside = monthlyLost * 12;
+  const ourFee = Math.min(Math.max(monthlyLost * 0.15, 75), 2000);
+  const roiMultiple = ourFee > 0 ? Math.round((monthlyLost / ourFee) * 10) / 10 : 0;
+
+  document.getElementById('lostRevenue').textContent = '$' + monthlyLost.toLocaleString();
+  document.getElementById('lostLeads').textContent = leakedLeads + ' leads slipping away every month';
+  document.getElementById('recoveredLeads').textContent = recoveredLeads + ' / month';
+  document.getElementById('additionalClients').textContent = additionalClients + ' new clients';
+  document.getElementById('annualUpside').textContent = '$' + annualUpside.toLocaleString();
+  document.getElementById('systemROI').textContent = roiMultiple + 'x estimated';
+
+  const responseLabels = ['instantly', 'within 1 hour', 'same day', 'next day or later'];
+  let verdict = '';
+  if (monthlyLost === 0) {
+    verdict = 'Enter your numbers to see your revenue leak.';
+  } else if (monthlyLost < 500) {
+    verdict = 'Responding ' + responseLabels[responseTime] + ' is causing manageable loss. A simple follow-up automation would recover most of it within the first week.';
+  } else if (monthlyLost < 3000) {
+    verdict = '$' + monthlyLost.toLocaleString() + '/month is walking out the door from slow follow-up. With automation in place, most of those ' + recoveredLeads + ' recoverable leads would convert before competitors even respond.';
+  } else {
+    verdict = 'This is a serious revenue leak — $' + monthlyLost.toLocaleString() + '/month lost from response time alone. Most clients at this level recover their full investment within the first 30 days.';
+  }
+  document.getElementById('roiVerdict').textContent = verdict;
+
+  const ctaEl = document.getElementById('roiCTA');
+  if (ctaEl) {
+    ctaEl.textContent = monthlyLost > 0
+      ? 'Recover My $' + monthlyLost.toLocaleString() + '/mo → Get Free Growth Mapping'
+      : 'Get My Free Growth Mapping →';
+  }
+}
+
+calcROI();
+</script>
+</body>
+</html>
